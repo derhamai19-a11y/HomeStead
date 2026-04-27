@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"/>
+  <title>Homestead</title>
+  <meta name="description" content="Tend your garden together — a shared chore app for George & Sammy"/>
+
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.webmanifest"/>
+  <meta name="theme-color" content="#FAF6EC"/>
+  <meta name="color-scheme" content="light"/>
+
+  <!-- iOS home screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="Homestead"/>
+  <link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+  <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png"/>
+  <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512.png"/>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png"/>
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg"/>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Caveat:wght@500;600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./styles.css"/>
+
+  <!-- ============================================================ -->
+  <!-- HOMESTEAD CONFIG — EDIT THESE VALUES                          -->
+  <!--                                                              -->
+  <!-- 1. Replace each REPLACE_ME with the value from your Firebase -->
+  <!--    project (Firebase console → Project settings → Web app).  -->
+  <!-- 2. Set householdId to something only you and your partner    -->
+  <!--    would know — it acts as a shared password for your data.  -->
+  <!-- 3. Save this file and re-deploy. No rebuild needed.          -->
+  <!-- ============================================================ -->
+  <script>
+    window.HOMESTEAD_CONFIG = {
+      firebase: {
+  apiKey: "AIzaSyCQVb8P9Oit08WTWYZQE6qBu1PyqAG2Gks",
+  authDomain: "homestead-6404f.firebaseapp.com",
+  databaseURL: "https://homestead-6404f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "homestead-6404f",
+  storageBucket: "homestead-6404f.firebasestorage.app",
+  messagingSenderId: "1072114182587",
+  appId: "1:1072114182587:web:60b43ee6aef067f028bc9e"
+      },
+      // Pick something only you two would know — it's your shared "password"
+      householdId: "HadenHill"
+    };
+  </script>
+
+  <style>
+    /* Pre-load splash to avoid flash of unstyled content */
+    html, body { background: #FAF6EC; }
+    #boot-splash {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, #FDD8C7 0%, #FAF6EC 60%, #B8C99F 100%);
+      z-index: 9999;
+      transition: opacity 0.35s ease-out;
+    }
+    #boot-splash.fade { opacity: 0; pointer-events: none; }
+    #boot-splash .seed {
+      font-size: 4rem;
+      animation: bootPulse 1.4s ease-in-out infinite;
+    }
+    #boot-splash .label {
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      color: #3D2A1F;
+      margin-top: 0.5rem;
+    }
+    @keyframes bootPulse {
+      0%, 100% { transform: scale(1); opacity: 0.85; }
+      50%      { transform: scale(1.08); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Boot splash, hidden by app once mounted -->
+  <div id="boot-splash">
+    <div style="text-align:center">
+      <div class="seed">🌻</div>
+      <div class="label">Homestead</div>
+    </div>
+  </div>
+
+  <div id="root"></div>
+
+  <script type="module" src="./app.js"></script>
+  <script>
+    // Hide splash once app has mounted
+    const hideSplash = () => {
+      const root = document.getElementById('root');
+      const splash = document.getElementById('boot-splash');
+      if (root && root.children.length > 0 && splash) {
+        splash.classList.add('fade');
+        setTimeout(() => splash.remove(), 400);
+      } else {
+        setTimeout(hideSplash, 100);
+      }
+    };
+    setTimeout(hideSplash, 200);
+
+    // Register service worker for offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch((err) => {
+          console.warn('Service worker registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
